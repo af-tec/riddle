@@ -1,7 +1,7 @@
 export const riddles  = [
 ["With thieves I consort, with the Vilest in short, I'm quite at ease in depravity, yet all divines use me and savants can't lose me. For I am the centre of gravity.","V"],
  [
-    "I move without wings Between silken string, I leave as you find ay substance behind."
+    "I move without wings Between silken string, I leave as you find my substance behind."
    ,"Spider"
  ],
  [
