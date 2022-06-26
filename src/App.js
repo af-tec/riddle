@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import './App.css';
 import { riddles } from './riddles';
-var NOW_IN_MS = Date.now();
-var GAME_EPOC_MS = 1656259406613;
-var ONE_DAY_IN_MS = 86400000;
-var riddle_day =  Object.keys(riddles)[Math.floor((NOW_IN_MS - GAME_EPOC_MS) / ONE_DAY_IN_MS)];
-var noOfGuesses = 5
-var guesses = []
+const riddle_day = getRiddleDay();
+var noOfGuesses = getNoOfGuesses();
+var guesses = getGuesses();
+var playerWon = hasPlayerWon();
+var gameOver = isGameOver();
 
 
 function App() {
@@ -16,7 +15,14 @@ function App() {
     <li>{guess}</li>
 
   );
-
+  const checkPlay = (event) => {
+    if (gameOver) {
+      setGuessesLeft(false);
+      setAnswer(true);
+    } else if (playerWon) {
+      setAnswer(true);
+    }
+  }
   const onInputChange = (event) => {
     setText(event.target.value);
   }
@@ -29,44 +35,49 @@ function App() {
     if (Answer() === text) {
         alert("correct!!");
         setAnswer(true);
+        localStorage.setItem("playerWon", "true");
     } else {
         alert("Incorrect!");
         noOfGuesses -= 1;
         if (noOfGuesses === 0) {
           setGuessesLeft(false);
           setAnswer(true);
+          localStorage.setItem("gameOver", "true");
         }
         setText('')
+        localStorage.setItem("noOfGuesses", noOfGuesses)
     }
 
   }
 
   return (
-    <div className="App">
+    <div className="App" onLoad={checkPlay}>
         <div className="headings">
         <h1 alt="title"> Riddle </h1>
-        <h2> # {parseInt(riddle_day) + 1} / {riddles.length}</h2>
-        <h3>Guesses Left: {noOfGuesses}</h3>
+
         </div>
 
         <form onSubmit={handleSubmit}>
-        {guessesLeft && <div id="Riddle">
-         <h3> Riddle: </h3><p><Riddle/></p>
+        {guessesLeft && <div className='sub-headings'>
+         <h3> Riddle # {parseInt(riddle_day) + 1} / {riddles.length}: </h3><p><Riddle/></p>
         </div>
         
         }
         {!guessesLeft && <p>
           Better luck next time ;)
           </p>}
-          <input name="answer" type = "text" onChange={onInputChange}/>
+          <h3 className='sub-headings'>Guesses Left: {noOfGuesses}</h3>
+          <h3 className='sub-headings'>Guess:</h3>
+          <input name="answer" className="field" type = "text" onChange={onInputChange}/>
           <br/>
       <button
+        id="check-answer"
         type='submit'
         disabled={!text} 
         >
           Submit
         </button>
-        {showAnswer && <p> <h3> Answer: </h3> <Answer/> </p>}
+        {showAnswer && <div> <h3> Answer: </h3> <Answer/> </div>}
         <div>
           <h3> Guesses</h3>
 
@@ -88,5 +99,39 @@ function Riddle() {
 function Answer() {
   return riddles[riddle_day][1];
 }
+
+function getRiddleDay() {
+  const NOW_IN_MS = Date.now();
+  const GAME_EPOC_MS = 1656259406613;
+  const ONE_DAY_IN_MS = 86400000;
+  const riddle_day =  Object.keys(riddles)[Math.floor((NOW_IN_MS - GAME_EPOC_MS) / ONE_DAY_IN_MS)];
+  const stored_day = parseInt(localStorage.getItem('day'));
+  console.log(stored_day)
+  if (riddle_day > stored_day) {
+    localStorage.setItem('day',JSON.stringify(riddle_day))
+    localStorage.removeItem('guesses')
+    localStorage.setItem('noOfGuesses', 5)
+  } 
+  return riddle_day;
+}
+
+function getGuesses() {
+  var guesses =  localStorage.getItem('guesses')
+  return guesses == null ? []: JSON.parse(guesses);  
+}
+
+function getNoOfGuesses() {
+  var noOfGuesses = localStorage.getItem('noOfGuesses');
+  return noOfGuesses == null ? 5: parseInt(localStorage.getItem("noOfGuesses"));
+}
+
+function hasPlayerWon() {
+  return localStorage.getItem('playerWon')? true : false;
+}
+
+function isGameOver() {
+  return localStorage.getItem('gameOver')? true: false;
+}
+
 
 export default App;
