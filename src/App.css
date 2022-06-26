@@ -8,6 +8,7 @@ body {
   background-color: "#bacfbb";
   padding: 0;
   margin: 0;
+  min-width: none
 }
 .sub-headings {
   font-size: 1.5em;
@@ -30,10 +31,12 @@ ol {
   text-align: center;
   font-size: 1.5em;
   width: 100%;
+  box-sizing: border-box;
   
 }
 
 #check-answer {
+  float: right;
   height: 50px;
   width: 100%;
   background-color: #4CAF50; /* Green */

@@ -106,8 +106,8 @@ function Answer() {
 
 function getRiddleDay() {
   const NOW_IN_MS = Date.now();
-  const GAME_EPOC_MS = 1656259406613;
-  const ONE_DAY_IN_MS = 86400000;
+  const GAME_EPOC_MS = 1.656198e+12;
+  const ONE_DAY_IN_MS = 8.64e+7;
   const riddle_day =  Object.keys(riddles)[Math.floor((NOW_IN_MS - GAME_EPOC_MS) / ONE_DAY_IN_MS)];
   const stored_day = parseInt(localStorage.getItem('day'));
   console.log(stored_day)
