@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './App.css';
 import { riddles } from './riddles';
+import 'react-bootstrap';
 const riddle_day = getRiddleDay();
 var noOfGuesses = getNoOfGuesses();
 var guesses = getGuesses();
@@ -67,24 +68,27 @@ function App() {
           Better luck next time ;)
           </p>}
           <h3 className='sub-headings'>Guesses Left: {noOfGuesses}</h3>
-          <h3 className='sub-headings'>Guess:</h3>
-          <input name="answer" className="field" type = "text" onChange={onInputChange}/>
-          <br/>
-      <button
-        id="check-answer"
-        type='submit'
-        disabled={!text} 
-        >
-          Submit
-        </button>
-        {showAnswer && <div> <h3> Answer: </h3> <Answer/> </div>}
-        <div>
-          <h3> Guesses</h3>
+          <div>
+          <h3> Previous Guesses</h3>
 
         <ol>
           {listItems}
         </ol>
         </div>
+          <div className='user-input'>
+          <input name="answer" placeholder="Guess" autoComplete="off"className="field" type = "text" onChange={onInputChange}/>
+          <br/>
+            <button
+            id="check-answer"
+        variant="success"
+        type='submit'
+        disabled={!text} 
+        >
+          Submit
+          </button>
+          </div>
+        {showAnswer && <div> <h3> Answer: </h3> <Answer/> </div>}
+
 
 
         </form>

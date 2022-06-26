@@ -11,13 +11,13 @@ body {
 }
 .sub-headings {
   font-size: 1.5em;
-  padding: 0 20%;
+  padding: 0 15%;
   
 }
 
  .headings {
   font-size: 2.0em;
-  padding: 0 20%;
+  padding: 0 15%;
 }
 
 ol {
@@ -26,21 +26,20 @@ ol {
   font-size: 1.5em;
 }
 .field {
-  width: 20%;
-  height: 56px;
+  height: 50px;
   text-align: center;
   font-size: 1.5em;
+  width: 100%;
   
 }
-.field:hover {
-  background-color: rgba(255, 255, 255, 0.45);
-  box-shadow: 0px 4px 20px 0px rgba(0, 0, 0, 0.05);
-}
+
 #check-answer {
-  width: 20%;
+  height: 50px;
+  width: 100%;
   background-color: #4CAF50; /* Green */
   color: white;
-  padding: 15px 32px;
-  display: inline-block;
   font-size: 1.5em;
+}
+.user-input {
+  margin: 0 15%;
 }
