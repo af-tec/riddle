@@ -2,28 +2,20 @@ import React, { useState } from 'react';
 import './App.css';
 import { riddles } from './riddles';
 import 'react-bootstrap';
+import toast, { Toaster } from 'react-hot-toast';
+
+
 const riddle_day = getRiddleDay();
 var noOfGuesses = getNoOfGuesses();
 var guesses = getGuesses();
-var playerWon = hasPlayerWon();
-var gameOver = isGameOver();
 
 
 function App() {
   const [guessesLeft, setGuessesLeft] = useState(true);
-  const [showAnswer,setAnswer] = useState(false)
   const listItems = guesses.map((guess) =>
     <li>{guess}</li>
 
   );
-  const checkPlay = (event) => {
-    if (gameOver) {
-      setGuessesLeft(false);
-      setAnswer(true);
-    } else if (playerWon) {
-      setAnswer(true);
-    }
-  }
   const onInputChange = (event) => {
     setText(event.target.value);
   }
@@ -34,15 +26,15 @@ function App() {
     localStorage.setItem('guesses',JSON.stringify(guesses))
     event.preventDefault();
     if (Answer() === text) {
-        alert("correct!!");
-        setAnswer(true);
+        setGuessesLeft(false);
+        toast.success("correct!!");
         localStorage.setItem("playerWon", "true");
+        localStorage.setItem("gameOver", "true");
     } else {
-        alert("Incorrect!");
+        toast.error("Incorrect!");
         noOfGuesses -= 1;
         if (noOfGuesses === 0) {
           setGuessesLeft(false);
-          setAnswer(true);
           localStorage.setItem("gameOver", "true");
         }
         setText('')
@@ -52,46 +44,46 @@ function App() {
   }
 
   return (
-    <div className="App" onLoad={checkPlay}>
+    <div className="App">
+        <Toaster/>
         <div className="headings">
         <h1 alt="title"> Riddle </h1>
 
         </div>
 
         <form onSubmit={handleSubmit}>
-        {guessesLeft && <div className='sub-headings'>
-         <h3> Riddle # {parseInt(riddle_day) + 1} / {riddles.length}: </h3><p><Riddle/></p>
-        </div>
-        
-        }
-        {!guessesLeft && <p>
-          Better luck next time ;)
-          </p>}
-          <h3 className='sub-headings'>Guesses Left: {noOfGuesses}</h3>
-          <div>
-          <h3> Previous Guesses</h3>
-
-        <ol>
-          {listItems}
-        </ol>
+        <div className='sub-headings'>
+         <h3> Riddle # {parseInt(riddle_day) + 1} / {riddles.length}: </h3>
+         <p><Riddle/></p>
         </div>
           <div className='user-input'>
-          <input name="answer" placeholder="Guess" autoComplete="off"className="field" type = "text" onChange={onInputChange}/>
+          <input name="answer" disabled={showAnswer()} placeholder="Guess" autoComplete="off" className="field" type = "text" onChange={onInputChange}/>
           <br/>
             <button
             id="check-answer"
         variant="success"
         type='submit'
-        disabled={!text} 
+        disabled={!text}
         >
           Submit
           </button>
+          <div id="answer">
+            {showAnswer() && <p> <br/> <h3> Answer: </h3> <Answer/> </p>}
           </div>
-        {showAnswer && <div> <h3> Answer: </h3> <Answer/> </div>}
-
-
-
+          </div>
         </form>
+        {showAnswer() && <p>
+          <EndOfGameMsg/>
+        </p>}
+          <h3 className='sub-headings'>Guesses Left: {noOfGuesses}</h3>
+          <div>
+            
+         {listItems && <h3> Previous Guesses</h3>}
+
+        <ol>
+          {listItems}
+        </ol>
+        </div>
     </div>
   );
 }
@@ -102,6 +94,11 @@ function Riddle() {
 } 
 function Answer() {
   return riddles[riddle_day][1];
+}
+function EndOfGameMsg() {
+  return localStorage.getItem('playerWon')
+  ? "Well done!  You solved today's riddle"
+  : "Better luck next time ;)"
 }
 
 function getRiddleDay() {
@@ -129,13 +126,12 @@ function getNoOfGuesses() {
   return noOfGuesses == null ? 5: parseInt(localStorage.getItem("noOfGuesses"));
 }
 
-function hasPlayerWon() {
-  return localStorage.getItem('playerWon')? true : false;
+
+function showAnswer() {
+  return (localStorage.getItem('gameOver') || localStorage.getItem('playerWon'))
+
 }
 
-function isGameOver() {
-  return localStorage.getItem('gameOver')? true: false;
-}
 
 
 export default App;
